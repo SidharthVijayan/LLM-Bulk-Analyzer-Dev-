@@ -1,33 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8"> <!-- ✅ FIXES EMOJI ISSUE -->
-  <title>LLM Readiness</title>
+  <meta charset="UTF-8">
+  <title>LLM Bulk Analyzer</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <div class="container">
-    <h1>LLM Readiness</h1>
 
-    <div id="scoreBox">
-      <div id="score">--</div>
-      <div id="label">Click Analyze</div>
-    </div>
+<div class="container">
+  <h1>Bulk Analyzer (Dev)</h1>
 
-    <div id="achievable"></div>
+  <textarea id="urlInput" placeholder="Paste URLs (one per line)"></textarea>
 
-    <div id="breakdown"></div>
+  <button id="bulkAnalyzeBtn">Run Analysis</button>
 
-    <div id="fixes">
-      <h3>🔧 Top Fixes</h3>
-      <ul id="fixList"></ul>
-    </div>
+  <div id="status"></div>
 
-    <div id="traffic"></div>
+  <div id="resultsTable"></div>
+</div>
 
-    <button id="analyzeBtn">Analyze Page</button>
-  </div>
-
-  <script src="popup.js"></script>
+<script src="popup.js"></script>
 </body>
 </html>
