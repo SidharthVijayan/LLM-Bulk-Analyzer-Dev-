@@ -1,3 +1,5 @@
+let bulkResults = [];
+
 document.getElementById("bulkAnalyzeBtn").addEventListener("click", async () => {
   const input = document.getElementById("urlInput").value;
 
@@ -8,13 +10,16 @@ document.getElementById("bulkAnalyzeBtn").addEventListener("click", async () => 
 
   if (urls.length === 0) return;
 
-  const results = [];
   const status = document.getElementById("status");
+  const progressFill = document.getElementById("progressFill");
+
+  bulkResults = [];
 
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i];
 
     status.innerText = `Analyzing ${i + 1} / ${urls.length}...`;
+    progressFill.style.width = `${((i + 1) / urls.length) * 100}%`;
 
     try {
       const tab = await chrome.tabs.create({
@@ -23,10 +28,11 @@ document.getElementById("bulkAnalyzeBtn").addEventListener("click", async () => 
       });
 
       await waitForTabLoad(tab.id);
+      await delay(1500); // 🔥 IMPORTANT FIX
 
       const data = await runAnalysis(tab.id);
 
-      results.push({
+      bulkResults.push({
         url,
         score: data.score || "N/A",
         achievable: data.achievable || "-"
@@ -37,7 +43,7 @@ document.getElementById("bulkAnalyzeBtn").addEventListener("click", async () => 
     } catch (err) {
       console.error(err);
 
-      results.push({
+      bulkResults.push({
         url,
         score: "Error",
         achievable: "-"
@@ -47,11 +53,16 @@ document.getElementById("bulkAnalyzeBtn").addEventListener("click", async () => 
 
   status.innerText = "Done ✅";
 
-  renderResults(results);
+  // 🔥 PRIORITY SORTING (lowest score first)
+  bulkResults.sort((a, b) => {
+    return (a.score === "Blocked" ? 0 : a.score) - (b.score === "Blocked" ? 0 : b.score);
+  });
+
+  renderResults(bulkResults);
 });
 
 
-// Wait for tab to fully load
+// WAIT FOR LOAD
 function waitForTabLoad(tabId) {
   return new Promise(resolve => {
     chrome.tabs.onUpdated.addListener(function listener(id, info) {
@@ -64,17 +75,29 @@ function waitForTabLoad(tabId) {
 }
 
 
-// Inject analysis script
+// DELAY
+function delay(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
+
+
+// RUN ANALYSIS SAFELY
 function runAnalysis(tabId) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     chrome.scripting.executeScript(
       {
         target: { tabId },
-        func: analyzePage
+        func: () => {
+          try {
+            return analyzePage();
+          } catch (e) {
+            return { score: "Error", achievable: "-" };
+          }
+        }
       },
       (results) => {
-        if (!results || !results[0]) {
-          resolve({});
+        if (!results || !results[0] || !results[0].result) {
+          resolve({ score: "Blocked", achievable: "-" });
         } else {
           resolve(results[0].result);
         }
@@ -84,10 +107,9 @@ function runAnalysis(tabId) {
 }
 
 
-// Render results
+// RENDER RESULTS
 function renderResults(results) {
   const container = document.getElementById("resultsTable");
-
   container.innerHTML = "";
 
   results.forEach(r => {
@@ -101,43 +123,44 @@ function renderResults(results) {
 }
 
 
-// 🔥 SAME ANALYSIS FUNCTION (SELF-CONTAINED)
+// CSV EXPORT
+document.getElementById("exportBtn").addEventListener("click", () => {
+  if (!bulkResults.length) return;
+
+  let csv = "URL,Score,Achievable\n";
+
+  bulkResults.forEach(r => {
+    csv += `"${r.url}",${r.score},${r.achievable}\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "llm_bulk_analysis.csv";
+  a.click();
+});
+
+
+// 🔥 CORE ANALYSIS
 function analyzePage() {
-
-  let fixes = [];
-  let breakdown = [];
-
   const h1 = document.querySelectorAll("h1").length;
   const h2 = document.querySelectorAll("h2").length;
   const lists = document.querySelectorAll("ul, ol").length;
   const paragraphs = document.querySelectorAll("p").length;
 
-  // STRUCTURE
   let structure = Math.min((h1 + h2) * 10, 100);
-  if (h1 === 0) {
-    structure -= 20;
-    fixes.push("Add H1");
-  }
-
-  // EXTRACTABILITY
   let extract = lists > 0 ? 70 : 30;
-  if (lists === 0) fixes.push("Add lists");
-
-  // SEMANTIC
-  let text = document.body.innerText.toLowerCase();
-  let semantic = text.includes("what is") ? 70 : 40;
-
-  // HTML
+  let semantic = document.body.innerText.toLowerCase().includes("what is") ? 70 : 40;
   let clean = 80;
-
-  // ENTITY
   let entity = Math.min(paragraphs * 2, 100);
 
   let score = Math.round(
     (structure + extract + semantic + clean + entity) / 5
   );
 
-  let achievable = Math.min(score + fixes.length * 5, 95);
+  let achievable = Math.min(score + 10, 95);
 
   return { score, achievable };
 }
