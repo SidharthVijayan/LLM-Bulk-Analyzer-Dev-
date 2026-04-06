@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "LLM Readiness Inspector",
+  "name": "LLM Bulk Analyzer (Dev)",
   "version": "1.0",
-  "description": "Analyze pages for AI citation readiness",
-  "permissions": ["activeTab", "scripting"],
+  "description": "Bulk analyze pages for AI readiness",
+  "permissions": ["activeTab", "scripting", "tabs"],
   "action": {
     "default_popup": "popup.html"
   }
