@@ -1,66 +1,52 @@
-# 🚀 LLM Readiness Inspector
+# 🚀 LLM Bulk Analyzer (Dev)
 
-Analyze any webpage for AI citation readiness and discover how to improve visibility in ChatGPT, Google AI Overviews, and other LLM-powered systems.
-
----
-
-## 🧠 What is this?
-
-LLM Readiness Inspector is a Chrome Extension that evaluates how well a webpage is structured for AI extraction and citation.
-
-It provides a score, actionable recommendations, and an estimate of how much improvement is possible — all in real-time, directly in your browser.
+An experimental Chrome Extension for analyzing multiple webpages at scale for AI (LLM) citation readiness.
 
 ---
 
-## ⚡ Features
+## 🧠 Overview
 
-- 📊 AI Discoverability Score (0–100)
-- 🎯 Achievable Score (optimization potential)
-- 🔧 Actionable Fix Suggestions
-- 📈 AI Visibility / Traffic Potential
-- 🧩 Structure & Extractability Analysis
-- ⚡ Instant, client-side processing (no API required)
+LLM Bulk Analyzer (Dev) is a prototype tool designed to extend single-page analysis into **batch-level content auditing**.
+
+It enables teams to evaluate how well large sets of URLs are structured for AI extraction, helping identify patterns, gaps, and optimization opportunities across entire content libraries.
+
+---
+
+## ⚡ Key Features
+
+- 📊 Bulk URL Analysis (multiple pages in one run)
+- 🎯 LLM Readiness Score per page
+- 🚀 Achievable Score (optimization potential)
+- 🔧 High-level issue detection
+- ⚡ Fully client-side execution (no backend required)
 
 ---
 
 ## 🔍 Why this matters
 
-Search is changing.
+AI systems (ChatGPT, Google AI Overviews, etc.) do not just rank content — they **extract and cite it**.
 
-AI systems no longer just rank content — they **extract and cite it**.
+At scale, teams need to understand:
+- Which pages are AI-ready
+- Which pages are being ignored
+- Where the biggest opportunities exist
 
-If your page:
-- lacks structure
-- has no clear answers
-- is hard to parse
-
-👉 it gets ignored by AI
-
-This tool helps you fix that.
+This tool enables **content intelligence at scale**.
 
 ---
 
 ## 🧪 How it works
 
-The extension analyzes:
-
-- Heading structure (H1–H3)
-- Content segmentation
-- Bullet points & lists
-- Semantic clarity ("what is", "how to")
-- Text density and layout
-- Basic entity signals
-
-It then computes:
-
-- LLM Readiness Score
-- Optimization Opportunities
-- Estimated AI Visibility Potential
+1. User inputs multiple URLs (one per line)
+2. The extension:
+   - Opens each page in a background tab
+   - Injects analysis script
+   - Extracts structural and semantic signals
+3. Outputs:
+   - Score per URL
+   - Optimization potential
+   - Summary results
 
 ---
 
-## 🛠️ Installation (Developer Mode)
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/llm-readiness-extension.git
+## 📊 Example Output
