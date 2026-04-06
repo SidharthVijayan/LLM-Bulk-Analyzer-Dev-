@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"> <!-- ✅ FIXES EMOJI ISSUE -->
+  <title>LLM Readiness</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>LLM Readiness</h1>
+
+    <div id="scoreBox">
+      <div id="score">--</div>
+      <div id="label">Click Analyze</div>
+    </div>
+
+    <div id="achievable"></div>
+
+    <div id="breakdown"></div>
+
+    <div id="fixes">
+      <h3>🔧 Top Fixes</h3>
+      <ul id="fixList"></ul>
+    </div>
+
+    <div id="traffic"></div>
+
+    <button id="analyzeBtn">Analyze Page</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
