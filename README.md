@@ -50,3 +50,31 @@ This tool enables **content intelligence at scale**.
 ---
 
 ## 📊 Example Output
+
+Score | URL
+
+82 | example.com/page-1
+45 | example.com/page-2
+67 | example.com/page-3
+
+
+---
+
+## 🔒 Security & Privacy
+
+- Runs entirely in the browser
+- No data is transmitted externally
+- No API calls or tracking
+- No data storage or persistence
+
+This behaves as a **local audit tool**, ensuring safe usage even on sensitive content.
+
+---
+
+## ⚠️ Limitations
+
+- Some websites may block script injection (browser restrictions)
+- Analysis is heuristic-based, not definitive
+- Does not account for:
+  - backlinks
+  - domain authority
